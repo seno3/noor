@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { useNoorStore } from '../hooks/useNoorStore';
 import { mentors } from '../data/mentors';
 
@@ -63,7 +64,7 @@ const MentorProfileCard = ({ mentor }: { mentor: typeof mentors[0] }) => {
       className="w-full max-w-md rounded-2xl border border-gray-100 bg-white p-6 shadow-2xl shadow-gray-200/50"
     >
       <div className="flex flex-col sm:flex-row items-center sm:space-x-4">
-        <img src={mentor.imageUrl} alt={mentor.name} className="h-20 w-20 rounded-full flex-shrink-0" />
+        <Image src={mentor.imageUrl} alt={mentor.name} width={80} height={80} className="h-20 w-20 rounded-full flex-shrink-0" unoptimized />
         <div className="mt-4 sm:mt-0 text-center sm:text-left">
           <h3 className="text-xl font-bold text-gray-900">{mentor.name}</h3>
           <p className="font-medium text-green-500">{mentor.title}</p>
@@ -113,7 +114,7 @@ export const MentorScreen = () => {
           className="text-center"
         >
           <h1 className="mb-12 text-center text-4xl font-bold text-gray-900">
-            You're not alone.
+            You&apos;re not alone.
             <br />
             <span className="text-green-500">Meet your mentors.</span>
           </h1>

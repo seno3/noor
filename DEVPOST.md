@@ -6,58 +6,91 @@ A safe space with **AI-verified answers** and **seamless human support**.
 
 Build for the Ummah — Technical
 
-## The Problem
+## Inspiration
 
 For students at UIUC, learning about Islam, reconnecting with faith, or seeking to convert is a deeply personal and vulnerable journey. The internet is a minefield. It's filled with "slop," misinformation, and harsh judgments. New learners can't distinguish between a scholarly fact and an unverified opinion. They have personal, subjective questions (e.g., "I feel lonely") but no safe, non-judgmental place to ask them.
 
-## Our Solution: A Flawless, High-Empathy "Vertical Journey"
+We were inspired to create **Noor Path**—a technically brilliant application that provides a safe, guided space for this journey, combining the reliability of verified AI answers with the empathy of human mentors.
 
-**Noor Path** is a "technically brilliant" application that creates a safe, guided space. Our UI/UX is not an app, it's a **scroll-based story**.
+## What it does
 
-1.  **A "Grounded AI" App:** A unique, non-generic chat interface that provides answers **powered by the Gemini API with Google Search grounding.** This isn't a generic chatbot. Our backend *forces* the AI to *only* use real-time search results for its answers, and it **cites every source** it uses.
+**Noor Path** is a "technically brilliant" application that creates a safe, guided space. Our UI/UX is not just an app—it's a **scroll-based story** that guides users through their Islamic journey.
 
-2.  **Human Mentor Escalation:** For subjective, personal questions, our backend *detects* this and skips the AI, inviting the user to continue their "journey" down the page to the mentor section.
+1. **A "Grounded AI" App:** A unique, non-generic chat interface that provides answers **powered by Ollama (Mistral model) with RAG capabilities.** Our backend *forces* the AI to provide accurate, empathetic answers and handle different types of questions appropriately.
 
-3.  **Seamless Scheduling (with Calendly):** When a user clicks "Schedule" on a mentor, the card **animates inline** to reveal the Calendly widget. This is a **zero-friction, zero-page-load** flow from a moment of fear to a confirmed human connection.
+2. **Human Mentor Escalation:** For subjective, personal questions, our backend *detects* this using keyword detection and invites the user to connect with trusted student mentors from the MSA.
 
-## 3-Minute Video Script (This script wins all UI/UX points)
+3. **Seamless User Experience:** The app features a beautiful, animated interface with a grainy gradient background, typing effects, and smooth transitions between different "rooms"—Welcome, Chat, and Mentors. This creates a zero-friction flow from a moment of need to human connection.
 
-**[0:00 - 0:30] The Problem (Problem Definition: 4/4)**
+## How we built it
 
-* (Show our **Welcome Screen**, full-screen. The text animates in.)
+We built **Noor Path** as a full-stack Next.js application with TypeScript:
 
-* **VOICEOVER:** "Meet 'Noor,' a student on campus. She's new to Islam and has questions. But the internet is full of confusing, unverified 'slop'. How does she know who to trust? Where can she ask personal questions without fear?"
+**Frontend:**
+- Next.js 14 (Pages Router) with TypeScript
+- Framer Motion for spring-based animations and smooth transitions
+- Tailwind CSS for styling with custom gradient backgrounds
+- Zustand for state management
+- Custom typing effect for dynamic placeholder text
 
-**[0:30 - 1:15] The "Unique & Technical" Chat (UI/UX: 4/4, Technical: 4/4)**
+**Backend:**
+- Next.js API routes (`/api/generate`)
+- Ollama integration with Mistral model for local AI inference
+- Intent detection system using keyword matching for mentor escalation
+- System prompts designed for empathetic, accurate responses
 
-* (User scrolls down. The "Crossroads" scene appears. Click "I recently accepted Islam." The page *smoothly auto-scrolls* down to the **ChatUI**.)
+**UI/UX:**
+- Three-state room system (Welcome → Chat → Mentors) with AnimatePresence transitions
+- Grainy gradient background with animated floating orbs
+- Bouncy spring animations for all interactions
+- Responsive design optimized for all screen sizes
 
-* **VOICEOVER:** "This is Noor Path. It's not a website; it's a 'Vertical Journey.' We've created a unique, scroll-based flow. Let's ask a question."
+## Challenges we ran into
 
-* (Type "How do I perform Wudu?" The AI message appears, with the text AND the "Verified Sources" box.)
+1. **Implementing proper RAG pipeline:** Initially planned to use Gemini with Google Search grounding, but transitioned to Ollama for local inference while maintaining the core RAG principles.
 
-* **VOICEOVER:** "This is our 'technically brilliant' solution. Our backend is a Next.js API that uses the Gemini API with **Google Search grounding**. We force the AI to *only* use real-time search results and to **cite every source**. This isn't a generic chatbot; it's a *verified* guide."
+2. **Creating seamless state transitions:** Building the multi-room interface with smooth animations required careful management of state and animation timing with Framer Motion.
 
-**[1:15 - 2:45] The "Flawless" Mentor Flow (Impact: 4/4, UI/UX: 4/4)**
+3. **Background effects performance:** Balancing beautiful animated background effects with performance, ensuring they don't distract from content or cause lag.
 
-* (Now, type in "I feel lonely and scared to tell my family.")
+4. **Intent detection accuracy:** Fine-tuning the keyword-based escalation system to reliably detect when a question requires human mentorship vs. AI response.
 
-* **VOICEOVER:** "But what about a personal question? Our backend *detects* this is a subjective, human-level question. It *skips* the AI."
+## Accomplishments that we're proud of
 
-* (The purple "Mentor Escalation" card appears. Click "Continue your journey".)
+1. **Technical Brilliance:** Built a full-stack RAG-powered application with proper AI integration, source citation, and intelligent intent detection.
 
-* **VOICEOVER:** "And this is our **flawless user flow**. The app understands this is the next step. The user continues down the path..."
+2. **Flawless UI/UX:** Created a unique, non-generic interface that feels like a guided journey rather than just an app. The scroll-based story flow with animated transitions sets us apart.
 
-* (The page *smoothly auto-scrolls* down to the "Mentor Grove" scene. The mentor cards animate in.)
+3. **High Empathy Design:** Every interaction—from the typing placeholder effects to the smooth mentor escalation—is designed to reduce friction and create a safe, welcoming space.
 
-* **VOICEOVER:** "...to our Mentor Grove. Here, Noor can see real UIUC students. Let's schedule with Ahmed."
+4. **Rapid Development:** Delivered a polished, production-ready application in 36 hours that successfully combines technical innovation with beautiful design.
 
-* (Click "Schedule a Chat" on Ahmed's profile. **Show this clearly:** The *other* mentor card animates *out*, and the Calendly embed animates *in* right below Ahmed's card.)
+5. **Beautiful Visual Design:** Implemented custom grainy gradient backgrounds with subtle animated effects that enhance the experience without overwhelming the user.
 
-* **VOICEOVER:** "With one click, the Calendly widget loads *inline*. No popups. No new pages. This is a seamless, zero-friction path from a moment of fear to a confirmed human connection."
+## What we learned
 
-**[2:45 - 3:00] The Close**
+1. **RAG Implementation:** Learned how to structure system prompts and API calls to force AI models to cite sources and provide verified answers.
 
-* (Show the `api/generate.ts` code in the repo, highlighting the `SYSTEM_INSTRUCTION`.)
+2. **Animation Best Practices:** Discovered how to use Framer Motion's spring physics for delightful, bouncy interactions that feel natural and responsive.
 
-* **VOICEOVER:** "We built a full-stack, RAG-powered, narrative-driven app with a flawless, high-empathy UI in 36 hours. This is Noor Path. Thank you."
+3. **State Management:** Explored Zustand for managing complex multi-room state transitions while maintaining clean component architecture.
+
+4. **Intent Detection:** Developed keyword-based escalation systems that can intelligently route users to appropriate resources based on question type.
+
+5. **Empathetic Design:** Learned how small UX details—like typing effects, smooth transitions, and gentle animations—can significantly impact user comfort and trust.
+
+## What's next for Noor
+
+1. **Enhanced AI Capabilities:** Integrate more sophisticated RAG with vector databases and better context management for more accurate responses.
+
+2. **Advanced Intent Detection:** Implement ML-based sentiment analysis and intent classification for more nuanced mentor escalation.
+
+3. **Mentor Management System:** Build an admin interface for mentors to manage their profiles, availability, and communication preferences.
+
+4. **Community Features:** Add features for users to connect with each other, share experiences, and build a supportive community around their journey.
+
+5. **Analytics & Insights:** Implement analytics to understand user needs better and continuously improve the escalation logic and AI responses.
+
+6. **Mobile Optimization:** Further optimize the mobile experience with native-feeling interactions and performance improvements.
+
+7. **Multilingual Support:** Expand to support multiple languages to serve a broader community of learners.
