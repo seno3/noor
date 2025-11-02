@@ -1,76 +1,32 @@
-import { useState, useEffect } from 'react';
+import { create } from 'zustand';
 
-export type AppState = 'welcome' | 'chat' | 'mentors' | 'scheduling';
+export type AppState = 'welcome' | 'chat' | 'mentors';
 
-export interface Source {
-  uri: string;
-  title: string;
+export interface Source { uri: string; title: string; }
+export interface AiResponse { type: 'VERIFIED_ANSWER' | 'MENTOR_ESCALATION' | 'ERROR'; text: string; sources: Source[]; }
+export interface Message { id: number; sender: 'user' | 'ai'; content?: AiResponse; userPrompt?: string; }
+
+interface NoorState {
+  appState: AppState;
+  messages: Message[];
+  isLoading: boolean;
+  
+  // Actions
+  setAppState: (state: AppState) => void;
+  sendMessage: (prompt: string) => Promise<void>;
 }
 
-export interface AiResponse {
-  type: 'VERIFIED_ANSWER' | 'MENTOR_ESCALATION' | 'ERROR';
-  text: string;
-  sources: Source[];
-}
-
-export interface Message {
-  id: number;
-  sender: 'user' | 'ai';
-  content?: AiResponse;
-  userPrompt?: string;
-}
-
-let globalState = {
-  appState: 'welcome' as AppState,
-  messages: [] as Message[],
+export const useNoorStore = create<NoorState>((set, get) => ({
+  appState: 'welcome',
+  messages: [],
   isLoading: false,
-  selectedMentorUrl: '',
-};
 
-let listeners: React.Dispatch<React.SetStateAction<typeof globalState>>[] = [];
+  setAppState: (state) => set({ appState: state }),
 
-const setState = (
-  newState: Partial<typeof globalState> | ((prev: typeof globalState) => Partial<typeof globalState>)
-) => {
-  if (typeof newState === 'function') {
-    globalState = { ...globalState, ...newState(globalState) };
-  } else {
-    globalState = { ...globalState, ...newState };
-  }
-  listeners.forEach((listener) => listener(globalState));
-};
-
-export const useNoorStore = () => {
-  const [state, _setState] = useState(globalState);
-
-  if (!listeners.includes(_setState)) {
-    listeners.push(_setState);
-  }
-
-  useEffect(() => {
-    return () => {
-      listeners = listeners.filter((l) => l !== _setState);
-    };
-  }, []);
-
-  const navigateTo = (state: AppState) => setState({ appState: state });
-
-  const startScheduling = (calendlyUrl: string) => {
-    setState({ selectedMentorUrl: calendlyUrl, appState: 'scheduling' });
-  };
-
-  const addMessage = (message: Message) => {
-    setState((prev) => ({ messages: [...prev.messages, message] }));
-  };
-
-  const sendMessage = async (prompt: string) => {
-    setState({ isLoading: true });
-    const userMessage: Message = {
-      id: Date.now(),
-      sender: 'user',
-      userPrompt: prompt,
-    };
-    addMessage(userMessage);
+  sendMessage: async (prompt: string) => {
+    set({ isLoading: true });
+    const userMessage: Message = { id: Date.now(), sender: 'user', userPrompt: prompt };
+    set((state) => ({ messages: [...state.messages, userMessage] }));
 
     try {
       const response = await fetch('/api/generate', {
@@ -78,32 +34,20 @@ export const useNoorStore = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt }),
       });
-
-      if (!response.ok) throw new Error('Network response was not ok');
-
+      if (!response.ok) throw new Error('Network error');
+      
       const aiData: AiResponse = await response.json();
-
-      const aiMessage: Message = {
-        id: Date.now() + 1,
-        sender: 'ai',
-        content: aiData,
-      };
-      addMessage(aiMessage);
+      const aiMessage: Message = { id: Date.now() + 1, sender: 'ai', content: aiData };
+      set((state) => ({ messages: [...state.messages, aiMessage] }));
     } catch (error) {
-      addMessage({
+      const errorMessage: Message = {
         id: Date.now() + 1,
         sender: 'ai',
-        content: {
-          type: 'ERROR',
-          text: 'I seem to be having trouble connecting. Please check your internet and try again.',
-          sources: [],
-        },
-      });
+        content: { type: 'ERROR', text: 'Connection error. Please try again.', sources: [] },
+      };
+      set((state) => ({ messages: [...state.messages, errorMessage] }));
     } finally {
-      setState({ isLoading: false });
+      set({ isLoading: false });
     }
-  };
-
-  return { ...state, navigateTo, startScheduling, sendMessage, addMessage };
-};
-
+  },
+}));

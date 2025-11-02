@@ -1,24 +1,24 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const ESCALATION_KEYWORDS: string[] = [
-  'scared', 'family', 'depressed', 'lonely', 'afraid', 'personal', 'feel', 'doubt',
+  'scared', 'family', 'depressed', 'lonely', 'afraid', 'personal', 'feel', 'doubt', 'ambiguous', 'subjective'
 ];
 
-const SYSTEM_INSTRUCTION = `You are "Noor Path," a gentle, supportive, and empathetic guide for Muslims. Your ONLY job is to answer the user's question based *exclusively* on the provided Google Search results.
+const SYSTEM_INSTRUCTION = `You are "Noor Path," a gentle, supportive, and empathetic guide for Muslims. Your job is to answer questions about Islam with care, accuracy, and empathy.
 
 RULES:
 
-1.  **DO NOT** answer from your own knowledge. Your knowledge is not verified.
+1.  Provide helpful, accurate information about Islamic teachings, practices, and guidance.
 
-2.  **ONLY** use the provided search results from the <tool_use> block.
+2.  Be gentle, non-judgmental, and supportive in your responses.
 
-3.  You **MUST** cite your sources. After a sentence, add a citation like [1], [2], etc., corresponding to the search result.
+3.  If you're uncertain about something or if a question is very personal/complex, suggest connecting with a mentor.
 
-4.  If the search results are not relevant to the user's question, you **MUST** apologize and say: "I'm sorry, I couldn't find a verified source for that specific question. Would you like me to connect you with a mentor who can help?"
+4.  Keep your answers concise (2-3 sentences), empathetic, and clear.
 
-5.  Keep your answers concise (2-3 sentences), empathetic, and clear.
+5.  If the user's prompt is a simple greeting (like "hi" or "hello"), just respond with a kind, short greeting.
 
-6.  If the user's prompt is a simple greeting (like "hi" or "hello"), just respond with a kind, short greeting. Do not use search.
+6.  Remember that this is a safe space for Muslims at all stages of their journey.
 
 `;
 
@@ -50,24 +50,24 @@ export default async function handler(
     });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY || '';
-  
-  if (!apiKey) {
-    return res.status(500).json({
-      type: 'ERROR',
-      text: "I'm having trouble connecting to my knowledge base right now. Please configure the GEMINI_API_KEY environment variable.",
-      sources: [],
-    });
-  }
+  const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
+  const ollamaModel = process.env.OLLAMA_MODEL || 'mistral';
 
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+  const apiUrl = `${ollamaUrl}/api/chat`;
 
   const payload = {
-    contents: [{ parts: [{ text: prompt }] }],
-    tools: [{ "google_search": {} }],
-    systemInstruction: {
-      parts: [{ text: SYSTEM_INSTRUCTION }],
-    },
+    model: ollamaModel,
+    messages: [
+      {
+        role: 'system',
+        content: SYSTEM_INSTRUCTION,
+      },
+      {
+        role: 'user',
+        content: prompt,
+      },
+    ],
+    stream: false,
   };
 
   try {
@@ -84,23 +84,12 @@ export default async function handler(
 
     const result = await apiResponse.json();
 
-    const candidate = result.candidates?.[0];
-    if (!candidate || !candidate.content?.parts?.[0]?.text) {
+    if (!result.message || !result.message.content) {
       throw new Error('Invalid API response structure');
     }
 
-    const text = candidate.content.parts[0].text;
-    let sources: { uri: string; title: string }[] = [];
-
-    const groundingMetadata = candidate.groundingMetadata;
-    if (groundingMetadata && groundingMetadata.groundingAttributions) {
-      sources = groundingMetadata.groundingAttributions
-        .map((attribution: any) => ({
-          uri: attribution.web?.uri,
-          title: attribution.web?.title,
-        }))
-        .filter((source: any) => source.uri && source.title);
-    }
+    const text = result.message.content;
+    const sources: { uri: string; title: string }[] = [];
 
     res.status(200).json({
       type: 'VERIFIED_ANSWER',

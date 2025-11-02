@@ -1,21 +1,18 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
-import { AnimatePresence } from 'framer-motion';
-import Head from 'next/head';
+import { Inter } from 'next/font/google';
 
-function MyApp({ Component, pageProps, router }: AppProps) {
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
+
+function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <>
-      <Head>
-        <title>Noor Path - Your Guided Journey</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </Head>
-      <AnimatePresence mode="wait">
-        <Component {...pageProps} key={router.asPath} />
-      </AnimatePresence>
-    </>
+    <main className={`${inter.variable} font-sans`}>
+      <Component {...pageProps} />
+    </main>
   );
 }
 
 export default MyApp;
-

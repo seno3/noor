@@ -1,41 +1,44 @@
-# Noor Path
+# Noor Path (MTCHacks 2025 Submission)
 
-A safe space with AI-verified answers and seamless human support for your Islamic journey.
+Noor Path is a high-empathy, full-stack application designed to provide a safe, non-judgmental space for individuals learning about Islam.
 
-## Getting Started
+Our app is built on a **"flawless" Vertical Journey flow:**
 
-First, install the dependencies:
+1.  **Welcome:** A full-screen, cinematic welcome to the "Noor Path."
 
-```bash
-npm install
-```
+2.  **Crossroads:** The user selects their persona (e.g., "I recently accepted Islam").
 
-Create a `.env.local` file in the root directory and add your Gemini API key:
+3.  **Chat:** The page auto-scrolls to our "technically brilliant" chat UI, which uses a **real RAG (Retrieval-Augmented Generation) backend** with Google Search grounding to provide *verified, cited answers*.
 
-```
-GEMINI_API_KEY=your_api_key_here
-```
+4.  **Mentor Escalation:** For personal questions, our backend detects the user's intent and offers a human connection.
 
-Run the development server:
+5.  **Mentor Grove:** The user auto-scrolls to the mentor section.
 
-```bash
-npm run dev
-```
+6.  **Seamless Scheduling:** When the user clicks "Schedule," the mentor card **animates inline** to reveal the Calendly widget. This is a **zero-friction, zero-page-load** flow from question to human support.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technical Brilliance
 
-## Project Structure
+* **Frontend:** A unique, single-page, scroll-based journey built with Next.js, TypeScript, and `framer-motion` for all layout and scroll animations.
 
-- `/pages` - Next.js pages and API routes
-- `/components` - React components
-- `/hooks` - Custom React hooks
-- `/data` - Static data files
-- `/styles` - Global styles
+* **Backend (`/api/generate`):** A robust Next.js API route that performs:
 
-## Key Features
+    1.  **Intent Detection** (Fact vs. Personal Escalation).
 
-- **AI-Powered Chat**: Uses Gemini API with Google Search grounding for verified answers
-- **Human Mentor Escalation**: Detects personal questions and connects users with mentors
-- **Seamless Scheduling**: Integrated Calendly widget for booking mentor sessions
-- **Smooth Animations**: Framer Motion animations for all screen transitions
+    2.  **Real-Time RAG** via Gemini (`gemini-2.5-flash-preview-09-2025`) and Google Search grounding.
 
+    3.  **System Instruction** enforcement to guarantee cited, safe answers and prevent AI "slop."
+
+* **Flawless UI/UX:** Our most critical feature is the inline Calendly embed, which uses `framer-motion`'s `layout` prop and `AnimatePresence` to create a seamless scheduling experience without ever leaving the page.
+
+## How to Run
+
+1.  `npm install`
+
+2.  Replace the placeholder URLs in `/data/mentors.ts` with your real Calendly links.
+
+3.  Create a `.env.local` file with your Gemini API key:
+    ```
+    GEMINI_API_KEY=your_api_key_here
+    ```
+
+4.  `npm run dev`
