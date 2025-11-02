@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            width: 350px;
+            padding: 20px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+            color: white;
+        }
+        
+        .container {
+            border: 2px solid #d97706;
+            border-radius: 12px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 22px;
+            color: #fbbf24;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+        
+        .status-online {
+            background-color: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+        
+        .status-offline {
+            background-color: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+        }
+        
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .setting-label {
+            flex: 1;
+            font-size: 14px;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #6b7280;
+            transition: .4s;
+            border-radius: 26px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #10b981;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        
+        #status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 13px;
+            min-height: 20px;
+        }
+        
+        .status-success {
+            background-color: rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+        
+        .status-error {
+            background-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+        
+        .info-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .info-section strong {
+            color: #fbbf24;
+        }
+        
+        #debugFactCheck {
+            width: 100%;
+            padding: 10px;
+            background-color: #d97706;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #debugFactCheck:hover:not(:disabled) {
+            background-color: #f59e0b;
+        }
+        
+        #debugFactCheck:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Noor: Islamic Truth Verifier</h1>
+            <span class="status-indicator" id="serverStatus"></span>
+        </div>
+        
+        <div class="setting-row">
+            <label class="setting-label">Enable Verification</label>
+            <label class="switch">
+                <input type="checkbox" id="enableFactCheck">
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <div id="status"></div>
+        
+        <div style="margin-top: 15px; padding: 12px; background-color: rgba(255, 255, 255, 0.1); border-radius: 8px;">
+            <button id="debugFactCheck">
+                🔍 Debug: Force Fact Check
+            </button>
+            <button id="resetFactCheck" style="width: 100%; padding: 8px; margin-top: 10px; background-color: #6b7280; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">
+                🔄 Reset (if stuck)
+            </button>
+            <div id="debugStatus" style="margin-top: 10px; font-size: 12px; text-align: center; min-height: 20px; color: white; font-weight: 500;"></div>
+        </div>
+        
+        <div class="info-section">
+            <strong>How it works:</strong><br>
+            • Automatically detects captions on YouTube<br>
+            • Accumulates until 30 words, then verifies<br>
+            • Shows Islamic fact-check results on screen<br>
+            • Requires server running on localhost:8004
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>

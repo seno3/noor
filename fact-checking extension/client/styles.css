@@ -1,0 +1,33 @@
+/* styles.css - Islamic Truth Verifier */
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    min-width: 200px;
+    background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+    color: white;
+}
+
+#fact-check-div {
+    max-width: 300px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    padding: 15px;
+    border: 2px solid #d97706;
+}
+
+button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: #047857;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #065f46;
+}
