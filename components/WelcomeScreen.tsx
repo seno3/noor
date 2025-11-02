@@ -44,6 +44,80 @@ const useTypingEffect = (options: string[], typingSpeed: number = 100, deletingS
   return displayText;
 };
 
+const BackgroundEffects = () => {
+  const shapes = Array.from({ length: 8 }, (_, i) => i);
+  
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none" style={{ zIndex: -1 }}>
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: 'linear-gradient(to bottom, #ffffff 0%, #d1fae5 60%, #a7f3d0 100%)',
+        }}
+      />
+      <div 
+        className="absolute inset-0 opacity-[0.15]"
+        style={{
+          backgroundImage: `
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E")
+          `,
+          backgroundSize: '200px 200px, 300px 300px',
+          mixBlendMode: 'multiply',
+        }}
+      />
+      {shapes.map((i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full bg-green-200/20 blur-2xl"
+          style={{
+            width: `${80 + i * 30}px`,
+            height: `${80 + i * 30}px`,
+            left: `${(i * 12) % 100}%`,
+            top: `${20 + (i * 15) % 60}%`,
+          }}
+          animate={{
+            x: [0, Math.sin(i) * 40, 0],
+            y: [0, Math.cos(i) * 40, 0],
+            scale: [1, 1.3 + i * 0.1, 1],
+            opacity: [0.2, 0.4, 0.2],
+          }}
+          transition={{
+            duration: 15 + i * 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: i * 0.8,
+          }}
+        />
+      ))}
+      {shapes.slice(0, 4).map((i) => (
+        <motion.div
+          key={`wave-${i}`}
+          className="absolute rounded-full bg-emerald-200/15 blur-3xl"
+          style={{
+            width: `${120 + i * 50}px`,
+            height: `${120 + i * 50}px`,
+            right: `${10 + i * 20}%`,
+            bottom: `${10 + i * 15}%`,
+          }}
+          animate={{
+            x: [0, -30, 0],
+            y: [0, 30, 0],
+            scale: [1, 1.4, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{
+            duration: 20 + i * 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: i * 1.5,
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 const ChatInput = ({ onSend, isLoading }: { onSend: (val: string) => void; isLoading: boolean }) => {
   const [value, setValue] = useState('');
   const typingText = useTypingEffect(typingOptions);
@@ -58,7 +132,7 @@ const ChatInput = ({ onSend, isLoading }: { onSend: (val: string) => void; isLoa
 
   return (
     <form onSubmit={handleSubmit} className="mx-auto mt-4">
-      <div className="flex items-center rounded-xl bg-white p-2 shadow-2xl shadow-pink-500/10 ring-1 ring-gray-100">
+      <div className="flex items-center rounded-xl bg-white p-2 shadow-2xl shadow-green-500/10 ring-1 ring-gray-100">
         <input
           type="text"
           value={value}
@@ -70,7 +144,7 @@ const ChatInput = ({ onSend, isLoading }: { onSend: (val: string) => void; isLoa
         <motion.button
           whileTap={{ scale: 0.9 }}
           type="submit"
-          className="rounded-lg bg-pink-500 p-3 text-white shadow-lg shadow-pink-500/30 transition-all hover:bg-pink-600 disabled:opacity-50"
+          className="rounded-lg bg-green-500 p-3 text-white shadow-lg shadow-green-500/30 transition-all hover:bg-green-600 disabled:opacity-50"
           disabled={isLoading}
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5 rotate-90">
@@ -88,7 +162,7 @@ const UserMessage = ({ msg }: { msg: string }) => (
     initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     className="mb-4 flex justify-end"
   >
-    <div className="max-w-md rounded-2xl rounded-br-none bg-pink-500 p-4 text-white shadow-lg shadow-pink-500/30">
+    <div className="max-w-xl rounded-2xl rounded-br-none bg-green-500 p-4 text-white shadow-lg shadow-green-500/30">
       {msg}
     </div>
   </motion.div>
@@ -114,7 +188,7 @@ const AiMessage = ({ content }: { content: AiResponse }) => (
     initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     className="mb-4 flex justify-start"
   >
-    <div className="max-w-md rounded-2xl rounded-bl-none border border-gray-100 bg-white p-4 text-gray-800 shadow-md shadow-gray-100">
+    <div className="max-w-xl rounded-2xl rounded-bl-none border border-gray-100 bg-white p-4 text-gray-800 shadow-md shadow-gray-100">
       <p className="whitespace-pre-wrap">{content.text}</p>
       {content.sources && content.sources.length > 0 && (
         <div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-3">
@@ -143,10 +217,10 @@ const MentorEscalation = ({ content }: { content: AiResponse }) => {
       initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className="mb-4 flex justify-start"
     >
-      <div className={`max-w-md rounded-2xl rounded-bl-none border p-5 shadow-lg ${
+      <div className={`max-w-xl rounded-2xl rounded-bl-none border p-5 shadow-lg ${
           isError 
           ? 'border-red-200 bg-red-50 text-red-800 shadow-red-100' 
-          : 'border-pink-200 bg-pink-50 text-pink-800 shadow-pink-100'
+          : 'border-green-200 bg-green-50 text-green-800 shadow-green-100'
       }`}>
         <p className="whitespace-pre-wrap font-medium">{content.text}</p>
         {!isError && (
@@ -154,7 +228,7 @@ const MentorEscalation = ({ content }: { content: AiResponse }) => {
             <motion.button 
               whileTap={{ scale: 0.95 }}
               onClick={() => setAppState('mentors')}
-              className="flex-1 rounded-xl bg-pink-500 px-4 py-3 font-semibold text-white shadow-lg shadow-pink-500/30 transition-all hover:bg-pink-600">
+              className="flex-1 rounded-xl bg-green-500 px-4 py-3 font-semibold text-white shadow-lg shadow-green-500/30 transition-all hover:bg-green-600">
               Meet the Mentors
             </motion.button>
           </div>
@@ -219,24 +293,25 @@ export const WelcomeScreen = () => {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className="flex min-h-screen w-full flex-col bg-white text-gray-900"
+      className="flex h-screen w-full flex-col text-gray-900 overflow-hidden relative"
     >
-      <motion.div variants={itemVariants} className="text-center pt-12 pb-8 px-4">
+      <BackgroundEffects />
+      <motion.div variants={itemVariants} className="text-center pt-12 pb-8 px-4 flex-shrink-0 relative z-10">
         <motion.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, -10, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2, delay: 1 }}
           className="mb-4 text-6xl"
-        >
+        > 
           ✨
         </motion.div>
-        <h1 className="text-5xl font-bold tracking-tight text-gray-900 sm:text-7xl">Noor Path</h1>
+        <h1 className="text-5xl font-bold tracking-tight text-gray-900 sm:text-7xl">Noor</h1>
         <p className="mt-4 text-xl text-gray-600">
           A gentle, modern guide for your Islamic journey.
         </p>
       </motion.div>
 
-      <div className="flex-1 flex flex-col max-w-2xl mx-auto w-full px-4 pb-4">
-        <div className="flex-1 space-y-4 overflow-y-auto min-h-0">
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 pb-4 min-h-0 relative z-10">
+        <div className="flex-1 space-y-4 overflow-y-auto overflow-x-hidden pr-2">
           <AnimatePresence>
             {messages.map(renderMessage)}
             {isLoading && <LoadingIndicator />}
@@ -244,7 +319,7 @@ export const WelcomeScreen = () => {
           <div ref={messagesEndRef} />
         </div>
         
-        <div className="pt-4">
+        <div className="pt-4 flex-shrink-0">
           <ChatInput onSend={sendMessage} isLoading={isLoading} />
         </div>
       </div>

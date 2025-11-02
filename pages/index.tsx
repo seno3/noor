@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Noor Path - Your Guided Journey</title>
+        <title>Noor - Your Guided Journey</title>
         <meta name="description" content="A safe, verified guide for your Islamic journey." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
