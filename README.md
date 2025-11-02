@@ -1,44 +1,88 @@
-# Noor Path (MTCHacks 2025 Submission)
+# Noor (MTCHacks 2025 Submission)
 
-Noor Path is a high-empathy, full-stack application designed to provide a safe, non-judgmental space for individuals learning about Islam.
+# Islamic Truth Verifier
 
-Our app is built on a **"flawless" Vertical Journey flow:**
+Fast Islamic fact-checking extension for YouTube videos. Validates claims about Islam, Quran, and Hadith against authenticated sources.
 
-1.  **Welcome:** A full-screen, cinematic welcome to the "Noor Path."
+## Prerequisites
 
-2.  **Crossroads:** The user selects their persona (e.g., "I recently accepted Islam").
+- Python 3.8+
+- Chrome/Edge browser
+- Ollama installed locally
 
-3.  **Chat:** The page auto-scrolls to our "technically brilliant" chat UI, which uses a **real RAG (Retrieval-Augmented Generation) backend** with Google Search grounding to provide *verified, cited answers*.
+## Setup
 
-4.  **Mentor Escalation:** For personal questions, our backend detects the user's intent and offers a human connection.
+### 1. Install Ollama
 
-5.  **Mentor Grove:** The user auto-scrolls to the mentor section.
+Download and install Ollama from: https://ollama.ai
 
-6.  **Seamless Scheduling:** When the user clicks "Schedule," the mentor card **animates inline** to reveal the Calendly widget. This is a **zero-friction, zero-page-load** flow from question to human support.
+### 2. Start Ollama
 
-## Technical Brilliance
+```bash
+ollama serve
+```
 
-* **Frontend:** A unique, single-page, scroll-based journey built with Next.js, TypeScript, and `framer-motion` for all layout and scroll animations.
+### 3. Pull a Model
 
-* **Backend (`/api/generate`):** A robust Next.js API route that performs:
+```bash
+ollama pull mistral
+```
 
-    1.  **Intent Detection** (Fact vs. Personal Escalation).
+Or use another model:
+```bash
+ollama pull llama2
+ollama pull qwen
+```
 
-    2.  **Real-Time RAG** via Gemini (`gemini-2.5-flash-preview-09-2025`) and Google Search grounding.
+### 4. Install Python Dependencies
 
-    3.  **System Instruction** enforcement to guarantee cited, safe answers and prevent AI "slop."
+```bash
+pip install -r requirements.txt
+```
 
-* **Flawless UI/UX:** Our most critical feature is the inline Calendly embed, which uses `framer-motion`'s `layout` prop and `AnimatePresence` to create a seamless scheduling experience without ever leaving the page.
+## Running the Server
 
-## How to Run
+```bash
+cd server
+python3 islamic_fact_check_server.py
+```
 
-1.  `npm install`
+The server will start on `http://localhost:8004`
 
-2.  Replace the placeholder URLs in `/data/mentors.ts` with your real Calendly links.
+## Load Browser Extension
 
-3.  Create a `.env.local` file with your Gemini API key:
-    ```
-    GEMINI_API_KEY=your_api_key_here
-    ```
+1. Open Chrome/Edge and go to `chrome://extensions/` (or `edge://extensions/`)
+2. Enable **Developer mode** (toggle in top-right)
+3. Click **Load unpacked**
+4. Select the `client` folder
+5. Extension is ready!
 
-4.  `npm run dev`
+## Usage
+
+1. Go to any YouTube video
+2. **Enable captions/subtitles** on the video
+3. The extension automatically monitors captions and fact-checks Islamic content
+4. Results appear in a popup on the screen
+
+## Optional: Configuration
+
+Create `server/.env` file to customize:
+
+```bash
+# AI Provider
+AI_PROVIDER=ollama
+
+# Ollama Settings
+OLLAMA_MODEL=mistral
+OLLAMA_BASE_URL=http://localhost:11434
+
+# Optional: Islamic API Keys
+SUNNAH_API_KEY=your_key_here
+```
+
+## Notes
+
+- The extension only processes Islamic content (automatically filters non-Islamic captions)
+- Quick checks are fast (<1 second)
+- Comprehensive analysis runs in the background
+- Popups stay visible for 60 seconds
